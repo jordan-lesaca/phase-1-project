@@ -9,10 +9,20 @@ function getMargaritas(){
     drinkLis.innerHTML = ''
     info.innerHTML = ''
     liked.innerHTML = ''
-    return fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita`)
+    fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita`)
     .then(resp => resp.json())
     .then(results => {
+        console.log('a')
         results.drinks.map(drink => { 
+            const ingredients = []
+            for (const [key, value] of Object.entries(drink)) {
+                console.log(`${key}: ${value}`);
+                if (key.startsWith('strIngredient') && value != null) {
+                    ingredients.push(value)
+                }
+                
+              }
+              console.log(ingredients)
             drinkLis.innerHTML += `
             <ul>
                 <a href='#' data-id='${drink.idDrink}' data-name="${drink.strDrink}" data-instructions="${drink.strInstructions}"> ${drink.strDrink}</a>
@@ -21,20 +31,21 @@ function getMargaritas(){
         })
         clickLinks()
     })
+    console.log('b')
 }
 
 function clickLinks(){
     const margaritaNames = document.querySelectorAll('ul a')
-    margaritaNames.forEach(margaritas => 
-        margaritas.addEventListener('click', displayDrinkInfo)
+    margaritaNames.forEach(margarita => 
+        margarita.addEventListener('click', displayDrinkInfo)
         )
 }
 
 function displayDrinkInfo(e){
-    let a = e.target
-    let drinkName = document.getElementById('drink-list')
-    let instructions = document.getElementById('info')
-    let btn = document.createElement('button')
+    const a = e.target
+    const drinkName = document.getElementById('drink-list')
+    const instructions = document.getElementById('info')
+    const btn = document.createElement('button')
     btn.setAttribute('id', 'buttons')
     btn.innerText = "like"
     drinkName.innerHTML = `<h2>${a.dataset.name}</hr>`
